@@ -1,0 +1,66 @@
+@inject BlazorToDo.WebApp.Services.IToDoUpdateService _ToDoUpdateService
+
+<div @key="@Item.Id" class="input-group input-group-lg">
+  <div class="input-group-prepend">
+    <button class="btn btn-outline-secondary" type="button" @onclick="ondoneclick">
+        @if(Item.Done)
+        {
+            <span class="oi oi-check text-primary" aria-hidden="true"></span>
+        } else
+        {
+            <span class="oi oi-check" aria-hidden="true"></span>
+        }
+    </button>
+  </div>
+  <input type="text" class="form-control" aria-label="Text input with checkbox" @oninput="textchanged" value="@Item.Title" />
+  <div class="input-group-append">
+    @if (ItemUpdating)
+    {
+        <div class="input-group-text">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Updating...</span>
+            </div>
+        </div>
+    }
+    @if(Item.Id != 0)
+    {
+        <button class="btn btn-danger" type="button" id="button-addon2"><span class="oi oi-x" aria-hidden="true"></span></button>
+    }
+  </div>
+</div>
+
+@functions {
+
+    protected override void OnInit()
+    {
+        _ToDoUpdateService.OnUpdate += (sender, args) => {
+            if(args.EditId == Item.EditId)
+            {
+                if(Item.Id == 0)
+                    Item.Id = args.Id;
+                ItemUpdating = false;
+                // Notify the "UI" to refresh
+                this.Invoke(() => this.StateHasChanged());
+            }
+        };
+    }
+
+    [Parameter]
+    public ToDoItem Item { get; set; }
+
+    private bool ItemUpdating = false;
+
+    private void textchanged(UIChangeEventArgs e)
+    {
+        Item.Title = e.Value as string;
+        _ToDoUpdateService.Enqueue(Item);
+        ItemUpdating = true;
+    }
+
+    private void ondoneclick()
+    {
+        Item.Done = !Item.Done;
+        _ToDoUpdateService.Enqueue(Item);
+        ItemUpdating = true;
+    }
+}
