@@ -1,6 +1,6 @@
 @inject BlazorToDo.WebApp.Services.IToDoUpdateService _ToDoUpdateService
 
-<div @key="@Item.Id" class="input-group input-group-lg">
+<div class="input-group input-group-lg mb-3">
   <div class="input-group-prepend">
     <button class="btn btn-outline-secondary" type="button" @onclick="ondoneclick">
         @if(Item.Done)
@@ -12,7 +12,7 @@
         }
     </button>
   </div>
-  <input type="text" class="form-control" aria-label="Text input with checkbox" @oninput="textchanged" value="@Item.Title" />
+  <input type="text" class="form-control" aria-label="Text input with checkbox" @oninput="textchanged" value="@Item.Title" placeholder="Something to do..." />
   <div class="input-group-append">
     @if (ItemUpdating)
     {
@@ -24,7 +24,7 @@
     }
     @if(Item.Id != 0)
     {
-        <button class="btn btn-danger" type="button" id="button-addon2"><span class="oi oi-x" aria-hidden="true"></span></button>
+        <button class="btn btn-danger" type="button" id="button-addon2" title="Remove todo" @onclick="removeToDo"><span class="oi oi-x" aria-hidden="true"></span></button>
     }
   </div>
 </div>
@@ -43,10 +43,28 @@
                 this.Invoke(() => this.StateHasChanged());
             }
         };
+
+        _ToDoUpdateService.OnCreate += (sender, args) => {
+            // TODO: Validate if Wait() is required/recommended
+            if(args.EditId == Item.EditId)
+                this.Invoke(() => OnItemCreated.InvokeAsync(args));            
+        };
+
+        _ToDoUpdateService.OnRemove += (sender, args) => {
+            // TODO: Validate if Wait() is required/recommended
+            if(args.EditId == Item.EditId)
+                this.Invoke(() => OnItemRemoved.InvokeAsync(args));            
+        };
     }
 
     [Parameter]
     public ToDoItem Item { get; set; }
+
+    [Parameter]
+    private EventCallback<ToDoItemEventArgs> OnItemCreated { get; set; }
+
+    [Parameter]
+    private EventCallback<ToDoItemEventArgs> OnItemRemoved { get; set; }
 
     private bool ItemUpdating = false;
 
@@ -62,5 +80,12 @@
         Item.Done = !Item.Done;
         _ToDoUpdateService.Enqueue(Item);
         ItemUpdating = true;
+    }
+
+    private void removeToDo()
+    {
+        ItemUpdating = true;
+        Item.MarkedForRemoval = true;
+        _ToDoUpdateService.Enqueue(Item);
     }
 }

@@ -15,5 +15,8 @@ namespace BlazorToDo.WebApp.Data
 
         [NotMapped]
         public Guid EditId { get; set; } = Guid.NewGuid();
+
+        [NotMapped]
+        public bool MarkedForRemoval { get; set; } = false;
     }
 }

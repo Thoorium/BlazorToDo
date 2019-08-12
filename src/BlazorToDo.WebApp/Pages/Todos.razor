@@ -1,0 +1,24 @@
+@page "/todos"
+
+@foreach (ToDoItem item in Items)
+{
+    <ToDo @key="@item.EditId" Item="item" OnItemCreated="OnItemCreated" OnItemRemoved="OnItemRemoved"></ToDo>
+}
+
+@functions {
+    private List<ToDoItem> Items = new List<ToDoItem>()
+    {
+        new ToDoItem()
+    };
+
+    private void OnItemCreated(ToDoItemEventArgs args)
+    {
+        Items.Add(new ToDoItem());
+    }
+
+    private void OnItemRemoved(ToDoItemEventArgs args)
+    {
+        var item = Items.First(f => f.EditId == args.EditId);
+        Items.Remove(item);
+    }
+}

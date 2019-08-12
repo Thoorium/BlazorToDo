@@ -9,6 +9,8 @@ namespace BlazorToDo.WebApp.Services
 
         void ProcessQueue();
 
+        event ToDoCreateEventHandler OnCreate;
         event ToDoUpdateEventHandler OnUpdate;
+        event ToDoRemoveEventHandler OnRemove;
     }
 }

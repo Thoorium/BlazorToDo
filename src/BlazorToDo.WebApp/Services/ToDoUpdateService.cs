@@ -38,20 +38,36 @@ namespace BlazorToDo.WebApp.Services
 
             foreach (var item in items)
             {
-                // TODO: Database Update Here
-                // TEMP
-                if(item.Value.Id == 0)
-                    item.Value.Id = 1;
-                    
-                OnUpdate?.Invoke(this, new ToDoItemUpdateEventArgs
+                ToDoItemEventArgs args = new ToDoItemEventArgs
                 {
                     EditId = item.Key,
                     Id = item.Value.Id
-                });
+                };
+
+                if(item.Value.MarkedForRemoval)
+                {
+                    // TODO: Remove from database here
+
+                    OnRemove?.Invoke(this, args);
+                    continue;
+                }
+                // TODO: Database Update Here
+                // TEMP
+                if(item.Value.Id == 0)
+                {
+                    item.Value.Id = 1;
+                    OnCreate?.Invoke(this, args);
+                }
+                    
+                OnUpdate?.Invoke(this, args);
             }
         }
 
+        public event ToDoCreateEventHandler OnCreate;
         public event ToDoUpdateEventHandler OnUpdate;
-        public delegate void ToDoUpdateEventHandler(object sender, ToDoItemUpdateEventArgs e); 
+        public event ToDoRemoveEventHandler OnRemove;
+        public delegate void ToDoCreateEventHandler(object sender, ToDoItemEventArgs e); 
+        public delegate void ToDoUpdateEventHandler(object sender, ToDoItemEventArgs e); 
+        public delegate void ToDoRemoveEventHandler(object sender, ToDoItemEventArgs e); 
     }
 }
