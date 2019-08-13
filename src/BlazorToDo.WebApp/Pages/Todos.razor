@@ -1,5 +1,7 @@
 @page "/todos"
 
+<h1>Public Todos</h1>
+
 @foreach (ToDoItem item in Items)
 {
     <ToDo @key="@item.EditId" Item="item" OnItemCreated="OnItemCreated" OnItemRemoved="OnItemRemoved"></ToDo>

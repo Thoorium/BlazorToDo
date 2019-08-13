@@ -39,7 +39,6 @@ namespace BlazorToDo.WebApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
 
             services.AddSingleton<IToDoUpdateService, ToDoUpdateService>();
             services.AddHostedService<ScheduledTaskHostedService>();

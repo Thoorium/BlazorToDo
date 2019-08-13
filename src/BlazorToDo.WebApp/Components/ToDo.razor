@@ -2,7 +2,7 @@
 
 <div class="input-group input-group-lg mb-3">
   <div class="input-group-prepend">
-    <button class="btn btn-outline-secondary" type="button" @onclick="ondoneclick">
+    <button class="btn btn-outline-secondary" type="button" @onclick="OnDoneClick">
         @if(Item.Done)
         {
             <span class="oi oi-check text-primary" aria-hidden="true"></span>
@@ -12,7 +12,7 @@
         }
     </button>
   </div>
-  <input type="text" class="form-control" aria-label="Text input with checkbox" @oninput="textchanged" value="@Item.Title" placeholder="Something to do..." />
+  <input type="text" class="form-control" aria-label="Text input with checkbox" @oninput="TextChanged" value="@Item.Title" placeholder="Something to do..." />
   <div class="input-group-append">
     @if (ItemUpdating)
     {
@@ -24,7 +24,7 @@
     }
     @if(Item.Id != 0)
     {
-        <button class="btn btn-danger" type="button" id="button-addon2" title="Remove todo" @onclick="removeToDo"><span class="oi oi-x" aria-hidden="true"></span></button>
+        <button class="btn btn-danger" type="button" id="button-addon2" title="Remove todo" @onclick="RemoveToDo"><span class="oi oi-x" aria-hidden="true"></span></button>
     }
   </div>
 </div>
@@ -68,21 +68,21 @@
 
     private bool ItemUpdating = false;
 
-    private void textchanged(UIChangeEventArgs e)
+    private void TextChanged(UIChangeEventArgs e)
     {
         Item.Title = e.Value as string;
         _ToDoUpdateService.Enqueue(Item);
         ItemUpdating = true;
     }
 
-    private void ondoneclick()
+    private void OnDoneClick()
     {
         Item.Done = !Item.Done;
         _ToDoUpdateService.Enqueue(Item);
         ItemUpdating = true;
     }
 
-    private void removeToDo()
+    private void RemoveToDo()
     {
         ItemUpdating = true;
         Item.MarkedForRemoval = true;
