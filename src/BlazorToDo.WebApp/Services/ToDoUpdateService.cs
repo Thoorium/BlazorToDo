@@ -10,6 +10,7 @@ namespace BlazorToDo.WebApp.Services
     public class ToDoUpdateService : IToDoUpdateService
     {
         Queue<ToDoItem> queue;
+        Random rd = new Random();
 
         private readonly ILogger _logger;
 
@@ -40,8 +41,7 @@ namespace BlazorToDo.WebApp.Services
             {
                 ToDoItemEventArgs args = new ToDoItemEventArgs
                 {
-                    EditId = item.Key,
-                    Id = item.Value.Id
+                    Item = item.Value
                 };
 
                 if(item.Value.MarkedForRemoval)
@@ -55,7 +55,7 @@ namespace BlazorToDo.WebApp.Services
                 // TEMP
                 if(item.Value.Id == 0)
                 {
-                    item.Value.Id = 1;
+                    item.Value.Id = rd.Next(1, 9999);
                     OnCreate?.Invoke(this, args);
                 }
                     

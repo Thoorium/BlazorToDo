@@ -1,26 +1,39 @@
 @page "/todos"
+@inject BlazorToDo.WebApp.Services.IToDoUpdateService _ToDoUpdateService
 
 <h1>Public Todos</h1>
 
 @foreach (ToDoItem item in Items)
 {
-    <ToDo @key="@item.EditId" Item="item" OnItemCreated="OnItemCreated" OnItemRemoved="OnItemRemoved"></ToDo>
+    <ToDo @key="@item.EditId" Item="item" OnItemCreated="OnItemCreated"></ToDo>
 }
 
 @functions {
     private List<ToDoItem> Items = new List<ToDoItem>()
     {
         new ToDoItem()
-    };
+    };    
+
+    protected override void OnInit()
+    {
+        _ToDoUpdateService.OnUpdate += (sender, args) => {   
+            var item = Items.FirstOrDefault(f => f == args.Item);
+            if(item == null)
+                Items.Add(args.Item);
+            // Notify the "UI" to refresh    
+            this.Invoke(() => this.StateHasChanged());
+        };
+
+        _ToDoUpdateService.OnRemove += (sender, args) => {
+            var item = Items.First(f => f == args.Item);
+            Items.Remove(item);
+            // Notify the "UI" to refresh
+            this.Invoke(() => this.StateHasChanged());
+        };
+    }
 
     private void OnItemCreated(ToDoItemEventArgs args)
     {
         Items.Add(new ToDoItem());
-    }
-
-    private void OnItemRemoved(ToDoItemEventArgs args)
-    {
-        var item = Items.First(f => f.EditId == args.EditId);
-        Items.Remove(item);
     }
 }

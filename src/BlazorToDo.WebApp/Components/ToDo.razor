@@ -34,10 +34,10 @@
     protected override void OnInit()
     {
         _ToDoUpdateService.OnUpdate += (sender, args) => {
-            if(args.EditId == Item.EditId)
+            if(args.Item == Item)
             {
                 if(Item.Id == 0)
-                    Item.Id = args.Id;
+                    Item.Id = args.Item.Id;
                 ItemUpdating = false;
                 // Notify the "UI" to refresh
                 this.Invoke(() => this.StateHasChanged());
@@ -46,13 +46,13 @@
 
         _ToDoUpdateService.OnCreate += (sender, args) => {
             // TODO: Validate if Wait() is required/recommended
-            if(args.EditId == Item.EditId)
+            if(args.Item == Item)
                 this.Invoke(() => OnItemCreated.InvokeAsync(args));            
         };
 
         _ToDoUpdateService.OnRemove += (sender, args) => {
             // TODO: Validate if Wait() is required/recommended
-            if(args.EditId == Item.EditId)
+            if(args.Item == Item)
                 this.Invoke(() => OnItemRemoved.InvokeAsync(args));            
         };
     }
