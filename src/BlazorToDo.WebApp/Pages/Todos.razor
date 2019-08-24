@@ -14,21 +14,21 @@
         new ToDoItem()
     };    
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         _ToDoUpdateService.OnUpdate += (sender, args) => {   
             var item = Items.FirstOrDefault(f => f == args.Item);
             if(item == null)
                 Items.Add(args.Item);
             // Notify the "UI" to refresh    
-            this.Invoke(() => this.StateHasChanged());
+            this.InvokeAsync(() => this.StateHasChanged());
         };
 
         _ToDoUpdateService.OnRemove += (sender, args) => {
             var item = Items.First(f => f == args.Item);
             Items.Remove(item);
             // Notify the "UI" to refresh
-            this.Invoke(() => this.StateHasChanged());
+            this.InvokeAsync(() => this.StateHasChanged());
         };
     }
 

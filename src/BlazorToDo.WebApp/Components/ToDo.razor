@@ -31,7 +31,7 @@
 
 @functions {
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         _ToDoUpdateService.OnUpdate += (sender, args) => {
             if(args.Item == Item)
@@ -40,20 +40,20 @@
                     Item.Id = args.Item.Id;
                 ItemUpdating = false;
                 // Notify the "UI" to refresh
-                this.Invoke(() => this.StateHasChanged());
+                this.InvokeAsync(() => this.StateHasChanged());
             }
         };
 
         _ToDoUpdateService.OnCreate += (sender, args) => {
             // TODO: Validate if Wait() is required/recommended
             if(args.Item == Item)
-                this.Invoke(() => OnItemCreated.InvokeAsync(args));            
+                this.InvokeAsync(() => OnItemCreated.InvokeAsync(args));            
         };
 
         _ToDoUpdateService.OnRemove += (sender, args) => {
             // TODO: Validate if Wait() is required/recommended
             if(args.Item == Item)
-                this.Invoke(() => OnItemRemoved.InvokeAsync(args));            
+                this.InvokeAsync(() => OnItemRemoved.InvokeAsync(args));            
         };
     }
 
@@ -61,10 +61,10 @@
     public ToDoItem Item { get; set; }
 
     [Parameter]
-    private EventCallback<ToDoItemEventArgs> OnItemCreated { get; set; }
+    public EventCallback<ToDoItemEventArgs> OnItemCreated { get; set; }
 
     [Parameter]
-    private EventCallback<ToDoItemEventArgs> OnItemRemoved { get; set; }
+    public EventCallback<ToDoItemEventArgs> OnItemRemoved { get; set; }
 
     private bool ItemUpdating = false;
 
