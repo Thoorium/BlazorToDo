@@ -68,7 +68,7 @@
 
     private bool ItemUpdating = false;
 
-    private void TextChanged(UIChangeEventArgs e)
+    private void TextChanged(ChangeEventArgs e)
     {
         Item.Title = e.Value as string;
         _ToDoUpdateService.Enqueue(Item);
